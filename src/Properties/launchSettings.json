@@ -1,0 +1,24 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:8080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DefaultConnection": "Host=localhost;Port=5432;Database=stocks_db;Username=postgres;Password=postgres"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:8081;http://localhost:8080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
