@@ -35,10 +35,10 @@ public record PagedList<T>(List<T> Items, int Page, int PageSize, int TotalItems
 public static class PaginationDatabaseExtensions
 {
     public static async Task<PagedList<TResponse>> ToPagedListAsync<TRequest, TResponse>(
-        this IQueryable<TResponse> query, 
+        this IQueryable<TResponse> query,
         TRequest request,
-        Func<IQueryable<TResponse>, IOrderedQueryable<TResponse>> orderBy,
-        CancellationToken cancellationToken = default) 
+        Func<IQueryable<TResponse>, IOrderedQueryable<TResponse>>? orderBy,
+        CancellationToken cancellationToken = default)
         where TRequest : IPagedRequest
     {
         var page = request.Page ?? 1;
@@ -50,12 +50,22 @@ public static class PaginationDatabaseExtensions
 
         var totalItems = await query.CountAsync(cancellationToken);
 
-        var orderedQuery = orderBy(query);
-        var items = await orderedQuery
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
-
-        return new PagedList<TResponse>(items, page, pageSize, totalItems);
+        if (orderBy != null)
+        {
+            var orderedQuery = orderBy(query);
+            var items = await orderedQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+            return new PagedList<TResponse>(items, page, pageSize, totalItems);
+        }
+        else
+        {
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+            return new PagedList<TResponse>(items, page, pageSize, totalItems);
+        }
     }
 }
